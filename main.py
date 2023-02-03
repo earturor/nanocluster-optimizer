@@ -16,3 +16,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+'''Este es un comentario prueba'''
+# Otro comentario de prueba
