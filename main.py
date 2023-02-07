@@ -12,8 +12,7 @@ def main():
     # Optimize the cluster
     energy, x = gupta.optimize()
     print("Energy:", energy)
-
-    # The file path of the optimize cluster is in ./outputs/cluster-opt.xyz
+    
 
 if __name__ == '__main__':
     main()
