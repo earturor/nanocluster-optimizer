@@ -6,7 +6,8 @@ from potentials import gupta
 
 def main():
     # Type the path of the cluster
-    gupta.FILE_PATH = './inputs/test.xyz'
+    gupta.FILE_PATH_IN = './inputs/test.xyz'
+    gupta.FILE_PATH_OUT = './outputs/test-opt.xyz'
     
     # Optimize the cluster
     energy, x = gupta.optimize()

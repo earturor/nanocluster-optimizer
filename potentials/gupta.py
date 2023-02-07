@@ -36,7 +36,8 @@ LATTICE_PARAMETERS_R0 = {('Fe', 'Fe'): 2.5530, ('Fe', 'Co'): 2.5248, ('Fe', 'Ni'
                          ('Pd', 'Pd'): 2.7485, ('Pd', 'Pt'): 2.7600,
                          ('Pt', 'Pt'): 2.7747, ('Pt', 'Pd'): 2.7600}
 
-global FILE_PATH
+global FILE_PATH_IN
+global FILE_PATH_OUT
 
 # Optimizer
 def optimize():
@@ -50,7 +51,7 @@ def optimize():
     sol = minimize(potential, x0, method='BFGS', jac=grad, options={'gtol':1e-8, 'disp':True})
     x = sol.x
 
-    write_new_file_xyz(x, file='./outputs/cluster-opt.xyz')
+    write_new_file_xyz(x, FILE_PATH_OUT)
 
     return potential(x), x
 
@@ -58,7 +59,7 @@ def optimize():
 def read_file_xyz():
     atoms = []
     coordinates = []
-    with open(FILE_PATH, 'r') as file_object:
+    with open(FILE_PATH_IN, 'r') as file_object:
         file_object.readline()
         file_object.readline()
         for line in file_object:
