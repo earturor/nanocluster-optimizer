@@ -17,6 +17,7 @@ def main():
     print("Energy", energy)
 
 '''
+    # Optimize a cluster from a specific file
     # Type the path of the cluster
     gupta.FILE_PATH_IN = './inputs/test.xyz'
     gupta.FILE_PATH_OUT = './outputs/test-opt.xyz'
