@@ -1,3 +1,5 @@
+'''Generate a random cluster'''
+
 import numpy as np
 
 def random_cluster(file_path_out, atoms, lb=2.56, ub=-2.56):
