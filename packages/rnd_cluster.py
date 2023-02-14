@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def random_cluster(file_path_out, atoms, lb=2.56, ub=-2.56):
+def random(file_path_out, atoms, lb=2.56, ub=-2.56):
     atoms_list = []
     for key in atoms:
         for i in range(atoms[key]):
