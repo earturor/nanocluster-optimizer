@@ -136,8 +136,19 @@ class GuptaPotential:
         self.R0 = np.array([LATTICE_PARAMETERS_R0[aij] for aij in atom_ij], dtype=float)
 
         # calculate these once instead of every time in potential
+        self.XI2 = self.XI**2
         self.nP = -self.P
-        self.nQ = -self.Q
+        self.nQ2 = -self.Q * 2
+
+        def idx(i, j):
+            "see above scipy link"
+            if j < i:
+                i, j = j, i
+            return n * i + j - ((i + 2) * (i + 1)) // 2
+
+        self.pairwise = np.array(
+            [[idx(i, j) for j in range(n) if i != j] for i in range(n)]
+        )
 
         # bind this here so we don't try and take the gradient of self
         self.gradient = egrad(self.potential)
@@ -151,12 +162,11 @@ class GuptaPotential:
         """
         dist = np.linalg.norm(coords[self.ai] - coords[self.aj], axis=1)
         norm = dist / self.R0 - 1.0
-        Ub = self.XI * np.exp(self.nQ * norm)
+        Ub = self.XI2 * np.exp(self.nQ2 * norm)
         Ur = self.A * np.exp(self.nP * norm)
-        U: float = np.sum(Ur) - np.sum(Ub)
-        # the above only calculates half the matrix, but it's symmetric so can just
-        # double the result
-        return U * 2.0
+        U: float = 2.0 * np.sum(Ur)
+        U -= np.sum(np.sqrt(np.sum(Ub[self.pairwise], axis=1)))
+        return U
 
     @classmethod
     def random(
@@ -170,18 +180,37 @@ class GuptaPotential:
         return cls(atoms), coords
 
     @classmethod
-    def read_xyz_file(cls, path: str) -> tuple["GuptaPotential", np.ndarray]:
+    def read_xyz_file(
+        cls, path: str, *, validate: bool = False
+    ) -> tuple["GuptaPotential", np.ndarray]:
         atoms = []
         coordinates = []
         with open(path, "r") as fd:
-            fd.readline()
-            fd.readline()
+            num_atoms = fd.readline()
+            state = fd.readline()
             for line in fd:
                 atom, *xyz = line.split()
                 atoms.append(atom)
                 coordinates.append(xyz)
 
-        return cls(atoms), np.array(coordinates, dtype=float)
+        coords = np.array(coordinates, dtype=float)
+        gp = cls(atoms)
+
+        if validate:
+            if int(num_atoms) != len(coordinates):
+                raise ValueError(
+                    "n_atoms from file doesn't match number of coordinates"
+                )
+
+            e, _ = state.split(",", 1)
+            _, e = e.split("=")
+
+            if abs(float(e) - gp.potential(coords)) > 0.0001:
+                raise ValueError(
+                    "potential stored in file doesn't match calculated value"
+                )
+
+        return gp, coords
 
     def write_xyz_file(self, path: str, coords: np.ndarray) -> None:
         n = len(self.atoms)

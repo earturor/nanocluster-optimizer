@@ -1,14 +1,16 @@
-from potentials import gupta
+from pathlib import Path
+
+from potentials.gupta import GuptaPotential
 
 
 def main():
-    gp, coords = gupta.GuptaPotential.random({"Fe": 3, "Co": 9, "Ni": 7})
+    for path in Path("test-data").glob("*.xyz"):
+        # passing validate=True will cause code to throw if file is inconsistent
+        gp, c1 = GuptaPotential.read_xyz_file(path, validate=True)
+        e1 = gp.potential(c1)
+        e2, c2 = gp.optimize(c1, disp=True)
 
-    gp.write_xyz_file("start.xyz", coords)
-
-    pot, c2 = gp.optimize(coords, disp=True)
-
-    gp.write_xyz_file("output.xyz", c2)
+        print(f"optimising {path} changed energy from {e1:.6f} to {e2:.6f}")
 
 
 if __name__ == "__main__":
