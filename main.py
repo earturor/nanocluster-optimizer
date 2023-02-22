@@ -8,13 +8,13 @@ from packages import rnd_cluster
 
 def main():
     # Generates a certain number of random clusters and subsequently optimizes them.
-    epochs = 25 # Type the number of cluster to be generated
+    epochs = 1 # Type the number of cluster to be generated
     energies = []
     files = []
     for i in range(epochs):
         # Generate a random cluster
         file_path_out = './outputs/test-rnd.xyz'
-        atoms = {'Fe':0, 'Co':0, 'Ni':7} # Type the elements and their quantities
+        atoms = {'Fe':0, 'Co':0, 'Ni':3} # Type the elements and their quantities
         rnd_cluster.random(file_path_out, atoms)
         # Specifies the input and output path and then optimize the cluster
         gupta.FILE_PATH_IN = file_path_out
