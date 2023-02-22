@@ -3,6 +3,7 @@
 # email: earturordr@outlook.com
 
 from argparse import ArgumentParser
+from time import perf_counter
 
 from potentials.gupta import GuptaPotential
 
@@ -34,10 +35,13 @@ def main():
 
         gp.write_xyz_file(path_src, c1)
 
+        t0 = perf_counter()
         e2, c2 = gp.optimize(c1)
+        dt = perf_counter() - t0
+
         gp.write_xyz_file(path_out, c2)
 
-        print(f"{e1:.2f},{e2:.2f},{path_src},{path_out}")
+        print(f"{e1:.2f},{e2:.2f},{path_src},{path_out},{dt:.3f}")
 
 
 if __name__ == "__main__":
