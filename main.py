@@ -19,11 +19,11 @@ def main():
 
     for i in range(args.epochs):
         atoms = {
-            'Fe': args.fe,
-            'Co': args.co,
-            'Ni': args.ni,
-            'Pd': args.pd,
-            'Pt': args.pt,
+            "Fe": args.fe,
+            "Co": args.co,
+            "Ni": args.ni,
+            "Pd": args.pd,
+            "Pt": args.pt,
         }
 
         path_src = f"initial-{i:03}.xyz"
@@ -40,5 +40,5 @@ def main():
         print(f"{e1:.2f},{e2:.2f},{path_src},{path_out}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

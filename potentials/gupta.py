@@ -89,6 +89,7 @@ LATTICE_PARAMETERS_R0 = {
 def _is_symmtric(d: dict[tuple[str, str], float]) -> bool:
     "make sure d has entries for each pair of each set and they're symmetric"
     import itertools
+
     atomic_sets = [
         ["Fe", "Co", "Ni"],
         ["Pd", "Pt"],
