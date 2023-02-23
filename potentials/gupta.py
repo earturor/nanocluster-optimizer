@@ -240,7 +240,7 @@ class GuptaPotential:
             minimizer_kwargs={
                 "method": "BFGS",
                 },
-            niter=200
+            niter=100
         )
                    
         # sol = spo.minimize(
