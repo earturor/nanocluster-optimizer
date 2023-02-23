@@ -239,6 +239,7 @@ class GuptaPotential:
             coords.flatten(),
             minimizer_kwargs={
                 "method": "BFGS",
+                "jac": egrad(potential),
                 },
             niter=100
         )
