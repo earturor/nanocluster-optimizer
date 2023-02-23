@@ -13,7 +13,7 @@ def main():
     parser.add_argument("epochs", type=int)
     parser.add_argument("--fe", type=int, default=0)
     parser.add_argument("--co", type=int, default=0)
-    parser.add_argument("--ni", type=int, default=3)
+    parser.add_argument("--ni", type=int, default=0)
     parser.add_argument("--pd", type=int, default=0)
     parser.add_argument("--pt", type=int, default=0)
     args = parser.parse_args()

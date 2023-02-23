@@ -234,16 +234,25 @@ class GuptaPotential:
         def potential(x: np.ndarray) -> float:
             return self.potential(x.reshape(n, 3))
 
-        sol = spo.minimize(
+        sol = spo.basinhopping(
             potential,
             coords.flatten(),
-            method="BFGS",
-            jac=egrad(potential),
-            options={
-                "gtol": gtol,
-                "disp": disp,
-            },
+            minimizer_kwargs={
+                "method": "BFGS",
+                },
+            niter=200
         )
+                   
+        # sol = spo.minimize(
+        #     potential,
+        #     coords.flatten(),
+        #     method="BFGS",
+        #     jac=egrad(potential),
+        #     options={
+        #         "gtol": gtol,
+        #         "disp": disp,
+        #     },
+        # )
 
         return sol.fun, sol.x.reshape(n, 3)
 
