@@ -2,39 +2,47 @@
 # Arturo Rentería
 # email: earturordr@outlook.com
 
-import pandas as pd
-from potentials import gupta
-from packages import rnd_cluster
+from argparse import ArgumentParser
+from time import perf_counter
+
+from potentials.gupta import GuptaPotential
+
 
 def main():
-    # Generates a certain number of random clusters and subsequently optimizes them.
-    epochs = 1 # Type the number of cluster to be generated
-    energies = []
-    files = []
-    for i in range(epochs):
-        # Generate a random cluster
-        file_path_out = './outputs/test-rnd.xyz'
-        atoms = {'Fe':0, 'Co':0, 'Ni':3} # Type the elements and their quantities
-        rnd_cluster.random(file_path_out, atoms)
-        # Specifies the input and output path and then optimize the cluster
-        gupta.FILE_PATH_IN = file_path_out
-        gupta.FILE_PATH_OUT = f'./outputs/test-rnd-opt{i}.xyz'
-        energy, x = gupta.optimize()
-        print("Energy", energy)
-        # Create a energy table in csv
-        energies.append(float(energy))
-        files.append(str(f'test-rnd-opt{i}.xyz'))
-        df = pd.DataFrame({ "File": files, "Energy": energies })
-        df.to_csv('./outputs/energy_table.csv')
+    parser = ArgumentParser("Generate optimised nano-clusters")
+    parser.add_argument("epochs", type=int)
+    parser.add_argument("--fe", type=int, default=0)
+    parser.add_argument("--co", type=int, default=0)
+    parser.add_argument("--ni", type=int, default=3)
+    parser.add_argument("--pd", type=int, default=0)
+    parser.add_argument("--pt", type=int, default=0)
+    args = parser.parse_args()
 
-'''
-    # Optimize a cluster from a specific path
-    gupta.FILE_PATH_IN = './inputs/test.xyz'
-    gupta.FILE_PATH_OUT = './outputs/test-opt.xyz'    
-    energy, x = gupta.optimize()
-    print("Energy:", energy)
-'''
-    
+    for i in range(args.epochs):
+        atoms = {
+            "Fe": args.fe,
+            "Co": args.co,
+            "Ni": args.ni,
+            "Pd": args.pd,
+            "Pt": args.pt,
+        }
 
-if __name__ == '__main__':
+        path_src = f"initial-{i:03}.xyz"
+        path_out = f"optim-{i:03}.xyz"
+
+        gp, c1 = GuptaPotential.random(atoms)
+        e1 = gp.potential(c1)
+
+        gp.write_xyz_file(path_src, c1)
+
+        t0 = perf_counter()
+        e2, c2 = gp.optimize(c1)
+        dt = perf_counter() - t0
+
+        gp.write_xyz_file(path_out, c2)
+
+        print(f"{e1:.2f},{e2:.2f},{path_src},{path_out},{dt:.3f}")
+
+
+if __name__ == "__main__":
     main()
