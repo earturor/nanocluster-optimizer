@@ -241,7 +241,7 @@ class GuptaPotential:
                 "method": "BFGS",
                 "jac": egrad(potential),
                 },
-            niter=100
+            niter=250
         )
                    
         # sol = spo.minimize(
